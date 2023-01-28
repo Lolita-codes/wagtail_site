@@ -25,6 +25,21 @@ class RichTextBlock(blocks.RichTextBlock):
         label = 'Full RichText'
 
 
+class SimpleRichtextBlock(blocks.RichTextBlock):
+    """Richtext without (limited) all the features."""
+
+    def __init__(
+        self, required=True, help_text=None, editor="default", features=None, **kwargs
+    ):  # noqa
+        super().__init__(**kwargs)
+        self.features = ["bold", "italic", "link"]
+
+    class Meta:
+        template = "streams/richtext_block.html"
+        icon = "edit"
+        label = "Simple RichText"
+
+
 class CardBlock(blocks.StructBlock):
     """Cards with image and text and button"""
 
