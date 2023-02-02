@@ -5,14 +5,30 @@ from django.db import models
 from django import forms
 from django.shortcuts import render
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
+from rest_framework.fields import Field
 from wagtail.admin.panels import FieldPanel, MultiFieldPanel, InlinePanel
+from wagtail.api import APIField
 from wagtail.contrib.routable_page.models import route, RoutablePageMixin
 from wagtail.fields import StreamField
+from wagtail.images.api.fields import ImageRenditionField
 
 from wagtail.models import Page, Orderable
 from wagtail.snippets.models import register_snippet
 
 from streams import blocks
+
+
+class ImageSerializedField(Field):
+    """A custom serializer used in Wagtails v2 API."""
+
+    def to_representation(self, value):
+        """Return the image URL, title and dimensions."""
+        return {
+            "url": value.file.url,
+            "title": value.title,
+            "width": value.width,
+            "height": value.height,
+        }
 
 
 class BlogAuthorsOrderable(Orderable):
@@ -26,6 +42,34 @@ class BlogAuthorsOrderable(Orderable):
 
     panels = [
         FieldPanel("author"),
+    ]
+
+    @property
+    def author_name(self):
+        return self.author.name
+
+    @property
+    def author_website(self):
+        return self.author.website
+
+    @property
+    def author_image(self):
+        return self.author.image
+
+    api_fields = [
+        APIField("author_name"),
+        APIField("author_website"),
+        # This is using a custom django rest framework serializer
+        # APIField("author_image", serializer=ImageSerializedField()),
+        # The below APIField is using a Wagtail-built DRF Serializer that supports
+        # custom image rendition sizes
+        APIField(
+            "image",
+            serializer=ImageRenditionField(
+                'fill-200x250',
+                source="author_image"
+            )
+        ),
     ]
 
 
@@ -62,7 +106,7 @@ class BlogAuthor(models.Model):
         """String repr of this class."""
         return self.name
 
-    class Meta:  # noqa
+    class Meta:
         verbose_name = "Blog Author"
         verbose_name_plural = "Blog Authors"
 
@@ -210,6 +254,11 @@ class BlogDetailPage(Page):
             heading="Categories"
         ),
         FieldPanel("content"),
+    ]
+
+    api_fields = [
+        APIField("blog_authors"),
+        APIField("content"),
     ]
 
     def save(self, *args, **kwargs):

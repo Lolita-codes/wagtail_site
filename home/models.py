@@ -27,6 +27,10 @@ class HomePageCarouselImages(Orderable):
         FieldPanel("carousel_image")
     ]
 
+    api_fields = [
+        APIField("carousel_image"),
+    ]
+
 
 class HomePage(RoutablePageMixin, Page):
     """Home page model"""
@@ -57,6 +61,8 @@ class HomePage(RoutablePageMixin, Page):
         APIField("banner_subtitle"),
         APIField("banner_image"),
         APIField("banner_cta"),
+        APIField("carousel_images"),
+        APIField("content"),
 
     ]
 
