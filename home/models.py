@@ -1,10 +1,10 @@
 from django.db import models
 from django.shortcuts import render
 from modelcluster.fields import ParentalKey
+from wagtail.api import APIField
 from wagtail.admin.edit_handlers import FieldPanel, PageChooserPanel, InlinePanel, MultiFieldPanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
 from wagtail.fields import RichTextField, StreamField
-from wagtail.images.edit_handlers import ImageChooserPanel
 
 from wagtail.models import Page, Orderable
 
@@ -30,7 +30,7 @@ class HomePageCarouselImages(Orderable):
 
 class HomePage(RoutablePageMixin, Page):
     """Home page model"""
-    templates = "home/home_page.html"
+    template = "home/home_page.html"
     banner_title = models.CharField(max_length=100, blank=False, null=True)
     banner_subtitle = RichTextField(features=["bold", "italic"])
     banner_image = models.ForeignKey(
@@ -51,6 +51,14 @@ class HomePage(RoutablePageMixin, Page):
     content = StreamField([
         ("cta", blocks.CTABlock()),
     ], null=True, blank=True, use_json_field=True)
+
+    api_fields = [
+        APIField("banner_title"),
+        APIField("banner_subtitle"),
+        APIField("banner_image"),
+        APIField("banner_cta"),
+
+    ]
 
     max_count = 1
     content_panels = Page.content_panels + [
