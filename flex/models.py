@@ -13,6 +13,12 @@ class FlexPage(Page):
 
     template = "flex/flex_page.html"
 
+    subpage_types = ['flex.FlexPage', 'contact.ContactPage']
+    parent_page_types = [
+        'flex.FlexPage',
+        'home.HomePage',
+    ]
+
     content = StreamField(
         [
             ('title_and_text', blocks.TitleAndTextBlock()),
