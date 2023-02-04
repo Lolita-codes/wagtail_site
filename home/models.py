@@ -1,6 +1,7 @@
 from django.db import models
 from django.shortcuts import render
 from modelcluster.fields import ParentalKey
+from wagtail.admin.panels import TabbedInterface, ObjectList
 from wagtail.api import APIField
 from wagtail.admin.edit_handlers import FieldPanel, PageChooserPanel, InlinePanel, MultiFieldPanel
 from wagtail.contrib.routable_page.models import RoutablePageMixin, route
@@ -79,20 +80,36 @@ class HomePage(RoutablePageMixin, Page):
 
     max_count = 1
     content_panels = Page.content_panels + [
-        MultiFieldPanel([
-            FieldPanel("banner_title"),
-            FieldPanel("banner_subtitle"),
-            PageChooserPanel('banner_cta'),
-        ], heading='Banner Options'),
-        MultiFieldPanel([
-            InlinePanel('carousel_images', heading='Carousel Images', max_num=5, min_num=1, label="Image"),
-        ]),
+        MultiFieldPanel(
+            [InlinePanel("carousel_images", max_num=5, min_num=1, label="Image")],
+            heading="Carousel Images",
+        ),
         FieldPanel("content"),
     ]
 
-    promote_panels = [
-        FieldPanel('banner_image')
+    # To hide promote and settings tabs
+    # promote_panels = []
+    # settings_panels = []
+
+    banner_panels = [
+        MultiFieldPanel(
+            [
+                FieldPanel("banner_title"),
+                FieldPanel("banner_subtitle"),
+                FieldPanel("banner_image"),
+                PageChooserPanel("banner_cta"),
+            ],
+            heading="Banner Options",
+        ),
     ]
+
+    edit_handler = TabbedInterface(
+        [
+            ObjectList(content_panels, heading='Content'),
+            ObjectList(banner_panels, heading="Banner Settings"),
+            ObjectList(Page.promote_panels, heading='Promotional Stuff'),
+        ]
+    )
 
     class Meta:
         verbose_name = 'Home Page'
