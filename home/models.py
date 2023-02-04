@@ -120,3 +120,13 @@ class HomePage(RoutablePageMixin, Page):
         context = self.get_context(request, *args, **kwargs)
         context['a_special_test'] = 'Hello World 123123'
         return render(request, "home/subscribe.html", context)
+
+
+# Changes the "title" field's verbose name to "Custom Name" but is still referenced it in the template as `page.title`
+# HomePage._meta.get_field("title").verbose_name = "Custom Name"
+# HomePage._meta.get_field("title").help_text = None
+# Only appears when creating a new page.
+# HomePage._meta.get_field("title").default = "Default HomePage Title"
+# To add a default `slug` value to the page.
+# # This does not need to reflect the same (or similar) value that the `title` field has.
+# HomePage._meta.get_field("slug").default = "default-homepage-title"
