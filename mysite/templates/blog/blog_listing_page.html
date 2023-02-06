@@ -1,19 +1,18 @@
 {% extends "base.html" %}
 
-{% load wagtailimages_tags cache %}
+{% load wagtailimages_tags wagtailroutablepage_tags cache %}
 
 {% block content %}
 
-    <h2>Categories:</h2>
-    <ul>
-        {% for cat in categories %}
-            <li>
-                <a href="?category={{ cat.slug }}">
+    <h2>Categories:
+        <small>
+            {% for cat in categories %}
+                <a href="{% routablepageurl page 'category_view' cat.slug %}">
                     {{ cat.name }}
-                </a>
-            </li>
-        {% endfor %}
-     </ul>
+                </a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </small>
+    </h2>
 
     <div class="container">
         {% for post in posts %}
