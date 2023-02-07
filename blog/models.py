@@ -218,7 +218,7 @@ class BlogListingPage(RoutablePageMixin, Page):
             # Look for the blog category by its slug.
             category = BlogCategory.objects.get(slug=cat_slug)
         except Exception:
-            # Blog category doesnt exist (ie /blog/category/missing-category/)
+            # Blog category doesn't exist (ie /blog/category/missing-category/)
             # Can redirect to self.url or return a 404
             category = None
 
@@ -240,7 +240,7 @@ class BlogListingPage(RoutablePageMixin, Page):
         return render(request, "blog/latest_posts.html", context)
 
     def get_sitemap_urls(self, request):
-        # Uncomment to have no sitemap for this page
+        # To have no sitemap for this page
         # return []
         sitemap = super().get_sitemap_urls(request)
         sitemap.append(

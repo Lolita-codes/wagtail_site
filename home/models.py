@@ -1,6 +1,7 @@
 from django.db import models
 from django.shortcuts import render
 from modelcluster.fields import ParentalKey
+from rest_framework.fields import Field
 from wagtail.admin.panels import TabbedInterface, ObjectList
 from wagtail.api import APIField
 from wagtail.admin.edit_handlers import FieldPanel, PageChooserPanel, InlinePanel, MultiFieldPanel
@@ -31,6 +32,18 @@ class HomePageCarouselImages(Orderable):
     api_fields = [
         APIField("carousel_image"),
     ]
+
+
+class BannerCTASerializer(Field):
+    def to_representation(self, page):
+        return {
+            'id': page.id,
+            'title': page.title,
+            'first_published_at': page.first_published_at,
+            'owner': page.owner,
+            'slug': page.slug,
+            'url': page.url,
+        }
 
 
 class HomePage(RoutablePageMixin, Page):
@@ -72,7 +85,7 @@ class HomePage(RoutablePageMixin, Page):
         APIField("banner_title"),
         APIField("banner_subtitle"),
         APIField("banner_image"),
-        APIField("banner_cta"),
+        APIField("banner_cta", serializer=BannerCTASerializer()),
         APIField("carousel_images"),
         APIField("content"),
 
