@@ -2,6 +2,7 @@
 
 from wagtail.core import blocks
 from wagtail.images.blocks import ImageChooserBlock
+from wagtail.templatetags.wagtailcore_tags import richtext
 
 
 class TitleAndTextBlock(blocks.StructBlock):
@@ -18,6 +19,9 @@ class TitleAndTextBlock(blocks.StructBlock):
 
 class RichTextBlock(blocks.RichTextBlock):
     """RichText with all the features"""
+
+    def get_api_representation(self, value, context=None):
+        return richtext(value.source)
 
     class Meta:
         template = "streams/richtext_block.html"
