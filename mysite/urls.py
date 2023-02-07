@@ -18,6 +18,7 @@ urlpatterns = [
     path("search/", search_views.search, name="search"),
     path('sitemap.xml', sitemap),
     path('api/v2/', api_router.urls),
+    path('accounts/', include('allauth.urls')),
 ]
 
 
